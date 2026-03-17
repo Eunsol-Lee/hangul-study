@@ -1,0 +1,315 @@
+/**
+ * main.css — Shared / global styles
+ * DO NOT MODIFY: This is a shared file used by all modules.
+ *
+ * Imports per-module stylesheets at the bottom.
+ * Design tokens (CSS custom properties) are defined here.
+ */
+
+/* ============================================================
+   1. Design Tokens
+   ============================================================ */
+:root {
+  /* Color palette — bright, cheerful, child-friendly */
+  --color-primary:    #FF6B6B; /* coral red   */
+  --color-secondary:  #4ECDC4; /* turquoise   */
+  --color-accent:     #FFE66D; /* yellow      */
+  --color-purple:     #A78BFA; /* soft purple */
+  --color-green:      #6BCB77; /* leaf green  */
+  --color-bg:         #FFFBF0; /* warm white  */
+  --color-surface:    #FFFFFF;
+  --color-text:       #2D3436;
+  --color-text-light: #636E72;
+  --color-correct:    #6BCB77;
+  --color-wrong:      #FF6B6B;
+
+  /* Typography — large and readable for young children */
+  --font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  --font-size-xs:   1rem;     /*  16px */
+  --font-size-sm:   1.25rem;  /*  20px */
+  --font-size-md:   1.5rem;   /*  24px */
+  --font-size-lg:   2rem;     /*  32px */
+  --font-size-xl:   2.5rem;   /*  40px */
+  --font-size-xxl:  4rem;     /*  64px */
+  --font-size-hero: 6rem;     /*  96px */
+
+  /* Spacing */
+  --space-xs:  0.5rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  2rem;
+  --space-xl:  3rem;
+
+  /* Border radius */
+  --radius-sm:   0.75rem;
+  --radius-md:   1.25rem;
+  --radius-lg:   2rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.10);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.18);
+
+  /* Touch-target minimum */
+  --touch-target: 56px;
+}
+
+/* ============================================================
+   2. Reset & Base
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+button:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   3. Utility classes
+   ============================================================ */
+.hidden {
+  display: none !important;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   4. Layout — App shell
+   ============================================================ */
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Top navigation bar */
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.app-nav__title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.app-nav__back-btn {
+  font-size: var(--font-size-md);
+  color: #fff;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+}
+
+.app-nav__back-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Content sections */
+.section {
+  flex: 1;
+  padding: var(--space-md);
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   5. Home screen
+   ============================================================ */
+.home-title {
+  text-align: center;
+  font-size: var(--font-size-xxl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.home-subtitle {
+  text-align: center;
+  font-size: var(--font-size-md);
+  color: var(--color-text-light);
+  margin-bottom: var(--space-xl);
+}
+
+.home-menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-md);
+}
+
+.menu-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: #fff;
+  min-height: 160px;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.menu-btn:hover,
+.menu-btn:active {
+  transform: scale(1.04);
+  box-shadow: var(--shadow-lg);
+}
+
+.menu-btn__emoji {
+  font-size: var(--font-size-xxl);
+  line-height: 1;
+}
+
+.menu-btn--cards   { background: var(--color-primary); }
+.menu-btn--combine { background: var(--color-secondary); color: var(--color-text); }
+.menu-btn--words   { background: var(--color-green); }
+.menu-btn--quiz    { background: var(--color-purple); }
+
+/* ============================================================
+   6. Shared card grid
+   ============================================================ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+}
+
+/* ============================================================
+   7. Tab bar (used in cards module)
+   ============================================================ */
+.tab-bar {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  background: var(--color-surface);
+  color: var(--color-text-light);
+  box-shadow: var(--shadow-sm);
+  min-height: var(--touch-target);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tab-btn.tab--active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* ============================================================
+   8. Animations
+   ============================================================ */
+@keyframes bounce {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.2); }
+  60%  { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes celebrate {
+  0%   { transform: scale(1) rotate(0deg); }
+  25%  { transform: scale(1.3) rotate(-5deg); }
+  50%  { transform: scale(1.3) rotate(5deg); }
+  75%  { transform: scale(1.1) rotate(-3deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-bounce {
+  animation: bounce 0.4s ease;
+}
+
+.animate-celebrate {
+  animation: celebrate 0.6s ease;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* ============================================================
+   9. Overlay / Modal base
+   ============================================================ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
+}
+
+.overlay__card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  text-align: center;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: var(--shadow-lg);
+}
+
+/* ============================================================
+   10. Per-module stylesheet imports
+   ============================================================ */
+@import url('cards.css');
+@import url('combine.css');
+@import url('words.css');
+@import url('quiz.css');

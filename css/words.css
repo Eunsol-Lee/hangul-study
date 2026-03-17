@@ -1,0 +1,220 @@
+/**
+ * words.css — Styles for F03: 단어 학습
+ * Owned by: words.js module builder
+ *
+ * F05: Speech triggered on card click (JS side)
+ * F06: Child-friendly UI — large emoji, colorful filter buttons, fun animations
+ */
+
+/* ============================================================
+   Category filter bar
+   ============================================================ */
+#words-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+  /* Center buttons on small screens */
+  justify-content: flex-start;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);   /* 20px — large enough for touch */
+  font-weight: 700;
+  background: var(--color-surface);
+  color: var(--color-text-light);
+  box-shadow: var(--shadow-sm);
+  min-height: var(--touch-target);  /* 56px — meets touch-target spec */
+  min-width: 5rem;
+  border: 2.5px solid transparent;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+/* Hover / focus states (F06: clear interactive feedback) */
+.filter-btn:hover,
+.filter-btn:focus-visible {
+  transform: scale(1.06);
+  box-shadow: var(--shadow-md);
+}
+
+/* Active (pressed) base style — overridden per category below */
+.filter-btn--active {
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+
+/* Per-category accent colors (F06: colorful & recognizable) */
+.filter-btn--all.filter-btn--active    { background: var(--color-primary);   border-color: var(--color-primary); }
+.filter-btn--animal.filter-btn--active { background: #FF9A3C;                border-color: #FF9A3C; }
+.filter-btn--food.filter-btn--active   { background: var(--color-primary);   border-color: var(--color-primary); }
+.filter-btn--nature.filter-btn--active { background: var(--color-green);     border-color: var(--color-green); }
+.filter-btn--object.filter-btn--active { background: var(--color-purple);    border-color: var(--color-purple); }
+
+/* Inactive: show a subtle tinted border so kids can tell them apart */
+.filter-btn--all    { border-color: #ffa0a0; }
+.filter-btn--animal { border-color: #ffcc88; }
+.filter-btn--food   { border-color: #ff9999; }
+.filter-btn--nature { border-color: #88d98a; }
+.filter-btn--object { border-color: #c4b3f8; }
+
+/* ============================================================
+   Words grid (F06: responsive, generous spacing)
+   ============================================================ */
+#words-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-md);
+  /* Smooth opacity fade when swapping categories */
+  transition: opacity 0.2s ease;
+}
+
+/* Fading state — triggered by JS before content swap */
+#words-grid.words-grid--fading {
+  opacity: 0;
+}
+
+/* ============================================================
+   Word card (F06: large emoji, colorful, generous padding)
+   ============================================================ */
+.word-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-md) var(--space-sm);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  min-height: 170px;
+  border: 3px solid transparent;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    border-color 0.12s ease;
+  /* Prevent text wrapping on very small cards */
+  overflow: hidden;
+}
+
+/* Per-category card tint (F06: visual grouping) */
+.word-card--animal { border-color: #ffcc88; background: #fffaf3; }
+.word-card--food   { border-color: #ffa0a0; background: #fff8f8; }
+.word-card--nature { border-color: #a8e6a8; background: #f4fff4; }
+.word-card--object { border-color: #c4b3f8; background: #f9f6ff; }
+
+/* Hover / focus feedback */
+.word-card:hover,
+.word-card:focus-visible {
+  transform: scale(1.06);
+  box-shadow: var(--shadow-md);
+}
+
+.word-card:active {
+  transform: scale(0.97);
+}
+
+/* ============================================================
+   Card contents (F06: emoji very prominent for preliterate kids)
+   ============================================================ */
+
+/* Emoji — the primary cue for kids who can't read yet */
+.word-card__emoji {
+  font-size: 4rem;    /* 64px — matches --font-size-xxl */
+  line-height: 1;
+  /* Prevent emoji from being clipped on some platforms */
+  display: block;
+  text-align: center;
+}
+
+/* Korean word */
+.word-card__word {
+  font-size: var(--font-size-lg);   /* 32px */
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* English meaning — smaller, secondary info */
+.word-card__meaning {
+  font-size: var(--font-size-xs);   /* 16px */
+  color: var(--color-text-light);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ============================================================
+   Animations (F06: playful feedback)
+   ============================================================ */
+
+/* Bounce on tap — defined here in addition to main.css for specificity */
+@keyframes word-card-bounce {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.22) rotate(-3deg); }
+  50%  { transform: scale(1.18) rotate(3deg); }
+  75%  { transform: scale(1.04) rotate(-1deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.word-card--bounce {
+  animation: word-card-bounce 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Staggered fade-in entrance when category is switched */
+@keyframes word-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.word-card--enter {
+  animation: word-card-enter 0.3s ease forwards;
+}
+
+/* ============================================================
+   Responsive adjustments
+   ============================================================ */
+
+/* On very small screens, go to 2 columns */
+@media (max-width: 360px) {
+  #words-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .word-card {
+    min-height: 140px;
+  }
+
+  .word-card__emoji {
+    font-size: 3rem;
+  }
+}
+
+/* On wider screens, relax column minimum for nicer proportions */
+@media (min-width: 600px) {
+  #words-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  #words-grid {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  }
+}

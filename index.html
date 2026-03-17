@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="미취학 아이를 위한 한글 공부 앱" />
+  <title>한글 공부 🌟</title>
+
+  <!-- Shared stylesheet (imports per-module CSS via @import) -->
+  <link rel="stylesheet" href="css/main.css" />
+
+  <!-- Google Fonts: Noto Sans KR for Korean glyphs -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- =====================================================
+         Navigation bar (visible on all sub-screens)
+         ===================================================== -->
+    <nav class="app-nav" id="app-nav">
+      <button class="app-nav__back-btn hidden" id="nav-back-btn"
+              aria-label="홈으로 돌아가기" data-nav="home">
+        ← 홈
+      </button>
+      <span class="app-nav__title" id="nav-title">한글 공부 🌟</span>
+      <div style="width:56px"></div><!-- spacer for centering -->
+    </nav>
+
+    <!-- =====================================================
+         Section: Home (메인 메뉴)
+         ===================================================== -->
+    <main id="home" class="section" aria-label="홈 화면">
+      <h1 class="home-title">한글 공부 🌟</h1>
+      <p class="home-subtitle">무엇을 배울까요?</p>
+
+      <div class="home-menu">
+        <button class="menu-btn menu-btn--cards" data-nav="cards"
+                aria-label="자음 모음 카드 학습">
+          <span class="menu-btn__emoji">📖</span>
+          <span>자음/모음 카드</span>
+        </button>
+
+        <button class="menu-btn menu-btn--combine" data-nav="combine"
+                aria-label="음절 조합 연습">
+          <span class="menu-btn__emoji">✨</span>
+          <span>글자 만들기</span>
+        </button>
+
+        <button class="menu-btn menu-btn--words" data-nav="words"
+                aria-label="단어 학습">
+          <span class="menu-btn__emoji">🐶</span>
+          <span>단어 배우기</span>
+        </button>
+
+        <button class="menu-btn menu-btn--quiz" data-nav="quiz"
+                aria-label="퀴즈 게임">
+          <span class="menu-btn__emoji">🎮</span>
+          <span>퀴즈 게임</span>
+        </button>
+      </div>
+    </main>
+
+    <!-- =====================================================
+         Section: F01 — 자음/모음 카드 학습
+         ===================================================== -->
+    <section id="cards" class="section hidden" aria-label="자음/모음 카드 학습">
+      <div class="tab-bar">
+        <button class="tab-btn tab--active" id="cards-tab-consonants">
+          자음 (ㄱ~ㅎ)
+        </button>
+        <button class="tab-btn" id="cards-tab-vowels">
+          모음 (ㅏ~ㅣ)
+        </button>
+      </div>
+
+      <!-- Cards rendered here by cards.js -->
+      <div class="card-grid" id="cards-grid" aria-live="polite"></div>
+
+      <!-- Card detail overlay (hidden until a card is tapped) -->
+      <div class="overlay hidden" id="card-detail" role="dialog" aria-modal="true"
+           aria-label="카드 상세">
+        <div class="overlay__card card-detail">
+          <span class="card-detail__char" aria-live="polite">ㄱ</span>
+          <span class="card-detail__name">기역</span>
+          <span class="card-detail__emoji">🦒</span>
+          <span class="card-detail__word">기린</span>
+          <button class="card-detail__close-btn" id="card-detail-close">
+            닫기 ✕
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         Section: F02 — 음절 조합 연습
+         ===================================================== -->
+    <section id="combine" class="section hidden" aria-label="음절 조합 연습">
+      <!-- Consonant selector -->
+      <div class="combine-selector">
+        <span class="combine-selector__label">자음을 골라요</span>
+        <div class="combine-selector__row" id="combine-consonants"
+             aria-label="자음 선택"></div>
+      </div>
+
+      <!-- Vowel selector -->
+      <div class="combine-selector">
+        <span class="combine-selector__label">모음을 골라요</span>
+        <div class="combine-selector__row" id="combine-vowels"
+             aria-label="모음 선택"></div>
+      </div>
+
+      <!-- Combined syllable result -->
+      <div class="combine-result">
+        <span class="combine-result__char" id="combine-result-char">?</span>
+        <span class="combine-result__label" id="combine-result-label">
+          자음과 모음을 골라보세요!
+        </span>
+        <button class="combine-speak-btn" id="combine-speak-btn"
+                aria-label="읽어주기">
+          🔊 읽어주기
+        </button>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         Section: F03 — 단어 학습
+         ===================================================== -->
+    <section id="words" class="section hidden" aria-label="단어 학습">
+      <!-- Category filters rendered by words.js -->
+      <div class="words-filter" id="words-filter" role="group"
+           aria-label="카테고리 선택"></div>
+
+      <!-- Word cards rendered by words.js -->
+      <div class="words-grid" id="words-grid" aria-live="polite"></div>
+    </section>
+
+    <!-- =====================================================
+         Section: F04 — 퀴즈 게임
+         ===================================================== -->
+    <section id="quiz" class="section hidden" aria-label="퀴즈 게임">
+      <!-- Score -->
+      <div class="quiz-score-bar">
+        <span class="quiz-score" id="quiz-score" aria-live="polite">0 / 8</span>
+      </div>
+
+      <!-- Question emoji -->
+      <div class="quiz-question">
+        <span class="quiz-question__emoji" id="quiz-question-emoji"
+              aria-live="polite">❓</span>
+        <p class="quiz-question__prompt">이게 뭐야?</p>
+      </div>
+
+      <!-- 4 answer choices rendered by quiz.js -->
+      <div class="quiz-choices" id="quiz-choices"
+           role="group" aria-label="보기"></div>
+
+      <!-- Result overlay (correct / wrong / final) -->
+      <div class="overlay hidden" id="quiz-result-overlay"
+           role="dialog" aria-modal="true" aria-label="결과">
+        <div class="overlay__card quiz-result__card">
+          <p class="quiz-result__msg" id="quiz-result-msg"></p>
+          <button class="quiz-next-btn" id="quiz-next-btn">
+            다음 문제 →
+          </button>
+          <button class="quiz-restart-btn hidden" id="quiz-restart-btn">
+            🔄 다시 하기
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /#app -->
+
+  <!-- =====================================================
+       Scripts — order matters!
+       1. Shared data & utilities (no dependencies)
+       2. App shell / navigation
+       3. Feature modules (depend on data, speech, app)
+       ===================================================== -->
+
+  <!-- Shared utilities (DO NOT MODIFY load order) -->
+  <script src="js/shared/data.js"></script>
+  <script src="js/shared/speech.js"></script>
+  <script src="js/shared/app.js"></script>
+
+  <!-- Feature modules -->
+  <script src="js/modules/cards.js"></script>
+  <script src="js/modules/combine.js"></script>
+  <script src="js/modules/words.js"></script>
+  <script src="js/modules/quiz.js"></script>
+
+  <!-- Inline: show/hide back button based on section -->
+  <script>
+    App.onNavigate(function(section) {
+      var backBtn  = document.getElementById('nav-back-btn');
+      var navTitle = document.getElementById('nav-title');
+      var titles = {
+        home:    '한글 공부 🌟',
+        cards:   '자음/모음 카드 📖',
+        combine: '글자 만들기 ✨',
+        words:   '단어 배우기 🐶',
+        quiz:    '퀴즈 게임 🎮',
+      };
+      if (section === 'home') {
+        backBtn.classList.add('hidden');
+      } else {
+        backBtn.classList.remove('hidden');
+      }
+      navTitle.textContent = titles[section] || '한글 공부 🌟';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+/**
+ * cards.css — Styles for F01: 자음/모음 카드 학습
+ * Owned by: cards.js module builder
+ *
+ * Features:
+ *   F01 — colorful flashcards with consonant/vowel tab switching
+ *   F05 — "듣기" listen button in detail overlay
+ *   F06 — child-friendly UI: big touch targets, bright colors, playful animations
+ */
+
+/* ============================================================
+   Keyframes — Animations for child-friendly interactions
+   ============================================================ */
+
+/* Card bounce when tapped */
+@keyframes cardBounce {
+  0%   { transform: scale(1) rotate(0deg); }
+  20%  { transform: scale(1.25) rotate(-4deg); }
+  40%  { transform: scale(1.15) rotate(3deg); }
+  60%  { transform: scale(1.1) rotate(-2deg); }
+  80%  { transform: scale(1.05) rotate(1deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Overlay inner card pop-in */
+@keyframes cardDetailPop {
+  0%   { transform: scale(0.5) translateY(40px); opacity: 0; }
+  60%  { transform: scale(1.08) translateY(-6px); opacity: 1; }
+  80%  { transform: scale(0.97) translateY(2px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Emoji wiggle on detail open */
+@keyframes emojiWiggle {
+  0%   { transform: rotate(0deg) scale(1); }
+  15%  { transform: rotate(-15deg) scale(1.2); }
+  30%  { transform: rotate(12deg) scale(1.25); }
+  45%  { transform: rotate(-10deg) scale(1.2); }
+  60%  { transform: rotate(8deg) scale(1.15); }
+  75%  { transform: rotate(-5deg) scale(1.1); }
+  90%  { transform: rotate(3deg) scale(1.05); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+/* Gentle float for the character in detail view */
+@keyframes charFloat {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Pulse glow for listen button */
+@keyframes listenPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0.7); }
+  70%  { box-shadow: 0 0 0 14px rgba(78, 205, 196, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0); }
+}
+
+/* ============================================================
+   Individual hangul character card (F06: touch-friendly)
+   ============================================================ */
+.hangul-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: var(--space-sm) var(--space-xs);
+  border-radius: var(--radius-md);
+  /* background set inline per-card from JS color palette */
+  background: var(--card-color, var(--color-surface));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  /* F06: minimum touch target 60px+ */
+  min-height: 140px;
+  min-width: 0;
+  width: 100%;
+  border: 3px solid rgba(255, 255, 255, 0.45);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shiny gloss overlay for a playful look */
+.hangul-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.hangul-card:hover {
+  transform: scale(1.07) rotate(-1deg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  filter: brightness(1.08);
+}
+
+.hangul-card:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* F06: Bounce animation class toggled by JS on click */
+.hangul-card--bounce {
+  animation: cardBounce 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* ============================================================
+   Card inner elements
+   ============================================================ */
+.hangul-card__char {
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  /* Prevent layout shift during stagger animation */
+  display: block;
+}
+
+.hangul-card__name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  /* Korean name label */
+}
+
+.hangul-card__emoji {
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  /* Slight opacity so it doesn't overpower the character */
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+/* ============================================================
+   Card detail overlay (F05: pronunciation support)
+   ============================================================ */
+
+/* The overlay backdrop (inherits .overlay from main.css) */
+#card-detail {
+  /* animation applied via fadeIn from main.css when overlay is shown */
+}
+
+/* Inner card panel - F06 child-friendly sizing */
+#card-detail .overlay__card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+  max-width: 440px;
+  width: 92%;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  /* colorful top border accent */
+  border-top: 6px solid var(--color-primary);
+}
+
+/* Pop-in animation class added by JS */
+.card-detail--pop {
+  animation: cardDetailPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Large character display */
+.card-detail__char {
+  font-size: var(--font-size-hero);
+  font-weight: 700;
+  color: var(--color-primary);
+  display: block;
+  line-height: 1;
+  margin-bottom: var(--space-xs);
+  /* Floating animation for engagement */
+  animation: charFloat 3s ease-in-out infinite;
+}
+
+/* Character name in Korean */
+.card-detail__name {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* Romanization sub-label (injected by JS) */
+.card-detail__romanization {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-style: italic;
+}
+
+/* Example emoji — large and animated */
+.card-detail__emoji {
+  font-size: 5rem;
+  display: block;
+  margin-bottom: var(--space-xs);
+  animation: emojiWiggle 0.8s ease-in-out;
+}
+
+/* Example word in Korean */
+.card-detail__word {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-secondary);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* English meaning (injected by JS) */
+.card-detail__meaning {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+  display: block;
+  margin-bottom: var(--space-lg);
+  text-transform: lowercase;
+}
+
+/* ============================================================
+   "듣기" Listen button (F05: voice pronunciation on demand)
+   ============================================================ */
+.card-detail__listen-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: var(--space-sm) var(--space-xl);
+  background: var(--color-secondary);
+  color: #fff;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  /* F06: minimum touch target */
+  min-height: 60px;
+  min-width: 160px;
+  margin-bottom: var(--space-sm);
+  box-shadow: 0 4px 14px rgba(78, 205, 196, 0.4);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  /* Pulse glow to draw child's attention */
+  animation: listenPulse 2s ease-in-out infinite;
+}
+
+.card-detail__listen-btn:hover,
+.card-detail__listen-btn:active {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(78, 205, 196, 0.55);
+  background: #3ab3ab;
+  animation: none; /* stop pulse while interacting */
+}
+
+/* ============================================================
+   Close button (F06: large touch target, clearly visible)
+   ============================================================ */
+.card-detail__close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-xl);
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  /* F06: minimum touch target */
+  min-height: 60px;
+  min-width: 160px;
+  box-shadow: 0 4px 14px rgba(255, 107, 107, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.card-detail__close-btn:hover,
+.card-detail__close-btn:active {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+  background: #e05555;
+}
+
+/* ============================================================
+   Responsive layout adjustments
+   ============================================================ */
+
+/* Slightly smaller cards on very small screens */
+@media (max-width: 360px) {
+  .hangul-card {
+    min-height: 110px;
+  }
+
+  .hangul-card__char {
+    font-size: 3rem;
+  }
+
+  .card-detail__char {
+    font-size: 5rem;
+  }
+
+  .card-detail__emoji {
+    font-size: 3.5rem;
+  }
+
+  .card-detail__listen-btn,
+  .card-detail__close-btn {
+    min-width: 130px;
+    padding: var(--space-sm) var(--space-md);
+  }
+}
+
+/* Larger cards on tablet+ */
+@media (min-width: 600px) {
+  .hangul-card {
+    min-height: 160px;
+  }
+
+  .hangul-card__char {
+    font-size: 5rem;
+  }
+}

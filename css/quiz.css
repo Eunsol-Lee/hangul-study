@@ -1,0 +1,349 @@
+/**
+ * quiz.css — Styles for F04: 퀴즈 게임 / F05: 음성 발음 지원 / F06: 아이 친화적 UI
+ * Owned by: quiz.js module builder
+ *
+ * Design principles (F06):
+ *   - Large touch targets (min 80px height for choices)
+ *   - High-contrast feedback colors
+ *   - Celebratory animations for correct answers
+ *   - Gentle, encouraging feedback for wrong answers
+ *   - Bright, cheerful color scheme using design tokens from main.css
+ */
+
+/* ============================================================
+   Score bar
+   ============================================================ */
+.quiz-score-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.quiz-score {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-purple);
+  background: var(--color-surface);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+  min-width: 90px;
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   Question area (emoji + prompt)
+   ============================================================ */
+.quiz-question {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+/* Large emoji — hero size for preschoolers (F06) */
+.quiz-question__emoji {
+  font-size: var(--font-size-hero);
+  line-height: 1.1;
+  display: block;
+  cursor: default;
+  /* Base state: no transform applied by .quiz-emoji--pop initially */
+}
+
+/* Pop-in entrance animation triggered by JS toggling this class */
+.quiz-question__emoji.quiz-emoji--pop {
+  animation: quizEmojiPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.quiz-question__prompt {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================================
+   Answer choices grid (F06: large buttons)
+   ============================================================ */
+.quiz-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+/* Each choice button — large, rounded, child-friendly (F06) */
+.quiz-choice {
+  position: relative;
+  padding: var(--space-md) var(--space-sm);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+  min-height: 90px;
+  border: 3px solid transparent;
+  transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease,
+              border-color 0.12s ease;
+  /* Staggered entrance from JS via animationDelay */
+  opacity: 0;
+}
+
+/* Staggered entrance animation for choices */
+.quiz-choice--enter {
+  animation: quizChoiceEnter 0.35s cubic-bezier(0.34, 1.45, 0.64, 1) forwards;
+}
+
+.quiz-choice:hover:not(:disabled) {
+  transform: scale(1.05);
+  background: var(--color-accent);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-secondary);
+}
+
+.quiz-choice:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.quiz-choice:disabled {
+  cursor: default;
+}
+
+/* Correct answer highlight (green) */
+.quiz-choice--correct {
+  background: var(--color-correct) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 18px rgba(107, 203, 119, 0.5) !important;
+}
+
+/* Bounce animation on the correctly chosen button (F06) */
+.quiz-choice--bounce {
+  animation: quizChoiceBounce 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Wrong answer (red) */
+.quiz-choice--wrong {
+  background: var(--color-wrong) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 18px rgba(255, 107, 107, 0.4) !important;
+}
+
+/* Shake animation on wrong choice (F06 — gentle visual feedback) */
+.quiz-choice--shake {
+  animation: quizChoiceShake 0.5s ease both;
+}
+
+/* ============================================================
+   Result overlay — shared card structure from main.css (.overlay, .overlay__card)
+   ============================================================ */
+.quiz-result__card {
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+/* The big emoji in overlay */
+.quiz-result__emoji {
+  font-size: var(--font-size-xxl);
+  display: block;
+  margin-bottom: var(--space-xs);
+  animation: quizEmojiPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Larger version for final result screen */
+.quiz-result__emoji--big {
+  font-size: 5rem;
+  animation: quizEmojiPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* The answer word displayed in overlay */
+.quiz-result__word {
+  font-size: var(--font-size-xl);
+  display: inline-block;
+  margin-top: var(--space-xs);
+}
+
+/* Hint text for wrong answer */
+.quiz-result__hint {
+  font-size: var(--font-size-md);
+  color: var(--color-text-light);
+  display: block;
+  margin-top: var(--space-xs);
+}
+
+/* The main message text in overlay */
+#quiz-result-msg {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: var(--space-lg);
+}
+
+/* Color the message by result type */
+.quiz-result--correct #quiz-result-msg { color: var(--color-correct); }
+.quiz-result--wrong   #quiz-result-msg { color: var(--color-wrong); }
+.quiz-result--final   #quiz-result-msg { color: var(--color-purple); }
+
+/* Correct overlay gets a green tint behind the card */
+.quiz-result--correct.overlay {
+  background: rgba(107, 203, 119, 0.25);
+}
+
+/* Wrong overlay gets a warm red tint */
+.quiz-result--wrong.overlay {
+  background: rgba(255, 107, 107, 0.20);
+}
+
+/* Final result — score number display */
+.quiz-result__final-score {
+  font-size: 4.5rem;
+  font-weight: 900;
+  color: var(--color-purple);
+  line-height: 1;
+  margin: var(--space-sm) 0;
+}
+
+.quiz-result__of {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text-light);
+}
+
+.quiz-result__praise {
+  font-size: var(--font-size-md);
+  color: var(--color-text-light);
+  margin-bottom: var(--space-lg);
+}
+
+/* ============================================================
+   Next / Restart buttons (F06: large, touch-friendly)
+   ============================================================ */
+.quiz-next-btn,
+.quiz-restart-btn {
+  display: block;
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: #fff;
+  min-height: var(--touch-target);
+  margin-top: var(--space-sm);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.quiz-next-btn    { background: var(--color-secondary); }
+.quiz-restart-btn { background: var(--color-purple); }
+
+.quiz-next-btn:hover,
+.quiz-restart-btn:hover {
+  transform: scale(1.04);
+  box-shadow: var(--shadow-md);
+}
+
+.quiz-next-btn:active,
+.quiz-restart-btn:active {
+  transform: scale(0.97);
+}
+
+/* ============================================================
+   Confetti star particles (F06: celebration effect)
+   Each star is absolutely positioned in the quiz section and
+   flies upward then fades. JS sets CSS custom properties:
+     --dx       horizontal drift in px
+     --dy       vertical drift in px (negative = upward)
+     --rotate   total rotation in deg
+     --scale    scale factor at peak
+   ============================================================ */
+#quiz {
+  position: relative;
+  overflow: hidden; /* keep stars clipped to section */
+}
+
+.quiz-confetti-star {
+  position: absolute;
+  pointer-events: none;
+  z-index: 50;
+  user-select: none;
+  /* Initial state — JS sets left/top via inline style */
+  transform: scale(1) translate(0, 0) rotate(0deg);
+  opacity: 1;
+}
+
+/* ============================================================
+   Keyframe animations
+   ============================================================ */
+
+/* Emoji bouncy pop-in */
+@keyframes quizEmojiPop {
+  0%   { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+  60%  { transform: scale(1.15) rotate(4deg);  opacity: 1; }
+  80%  { transform: scale(0.95) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg);     opacity: 1; }
+}
+
+/* Choice button staggered entrance */
+@keyframes quizChoiceEnter {
+  0%   { opacity: 0; transform: translateY(20px) scale(0.9); }
+  60%  { opacity: 1; transform: translateY(-4px) scale(1.03); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Bounce for correct answer button */
+@keyframes quizChoiceBounce {
+  0%   { transform: scale(1); }
+  20%  { transform: scale(1.25) rotate(-4deg); }
+  40%  { transform: scale(1.25) rotate(4deg); }
+  60%  { transform: scale(1.12) rotate(-2deg); }
+  80%  { transform: scale(1.06) rotate(1deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Shake for wrong answer button */
+@keyframes quizChoiceShake {
+  0%   { transform: translateX(0); }
+  12%  { transform: translateX(-10px) rotate(-2deg); }
+  24%  { transform: translateX(10px)  rotate(2deg); }
+  36%  { transform: translateX(-8px)  rotate(-1deg); }
+  48%  { transform: translateX(8px)   rotate(1deg); }
+  60%  { transform: translateX(-5px); }
+  72%  { transform: translateX(5px); }
+  84%  { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+/* Flying confetti stars */
+@keyframes quizStarFly {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(var(--scale)) rotate(var(--rotate));
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   Responsive adjustments — smaller screens (phones)
+   ============================================================ */
+@media (max-width: 480px) {
+  .quiz-question__emoji {
+    font-size: 5rem;
+  }
+
+  .quiz-choice {
+    font-size: var(--font-size-lg);
+    min-height: 75px;
+    padding: var(--space-sm);
+  }
+
+  .quiz-result__final-score {
+    font-size: 3.5rem;
+  }
+}
